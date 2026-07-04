@@ -15,11 +15,6 @@ __pycache__/
 instance/
 .webassets-cache
 
-# DB & Model binaries
-predictions.db
-models/model.pkl
-models/scaler.pkl
-models/results_summary.pkl
 
 # Dynamic plots
 static/images/confusion_matrix_best.png
