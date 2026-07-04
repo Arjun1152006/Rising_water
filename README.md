@@ -177,7 +177,3 @@ You can deploy this application easily to IBM Cloud Foundry or IBM Cloud Code En
    *The `Procfile` and `runtime.txt` will automatically guide the buildpack to run `gunicorn app:app`.*
 
 ---
-
-## 🧑‍💻 Author
-
-Developed by **Antigravity AI**. Ready for deployment in emergency management systems and smart environmental monitoring networks.
