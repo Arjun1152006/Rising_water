@@ -161,19 +161,96 @@ git remote add origin <github-repo-url>
 git push -u origin main
 ```
 
-### 2. IBM Cloud Deployment
-You can deploy this application easily to IBM Cloud Foundry or IBM Cloud Code Engine:
+### Step 2: Create a Render Account
 
-#### Code Engine Deployment
-1. Log in to IBM Cloud CLI:
-   ```bash
-   ibmcloud login --sso
-   ibmcloud target -g <resource-group-name>
-   ```
-2. Build and push your Docker image to IBM Cloud Container Registry (ICR) or deploy directly from the GitHub repository source code:
-   ```bash
-   ibmcloud ce app create --name rising-waters --build-source . --port 5000
-   ```
-   *The `Procfile` and `runtime.txt` will automatically guide the buildpack to run `gunicorn app:app`.*
+Visit:
 
----
+https://render.com
+
+Sign in using your GitHub account.
+
+### Step 3: Create a New Web Service
+
+- Click **New +**
+- Select **Web Service**
+- Connect your GitHub repository
+- Choose the **Rising_water** repository
+
+### Step 4: Configure the Service
+
+**Environment**
+
+```
+Python 3
+```
+
+**Build Command**
+
+```bash
+pip install -r requirements.txt
+```
+
+**Start Command**
+
+```bash
+gunicorn app:app
+```
+
+### Step 5: Environment Variables
+
+Add the following environment variable if required.
+
+| Variable | Value |
+|----------|-------|
+| SECRET_KEY | your_secret_key |
+
+### Step 6: Deploy
+
+Click **Create Web Service**.
+
+Render will automatically:
+
+- Clone the GitHub repository
+- Install all dependencies
+- Load the trained machine learning model
+- Start the Flask application
+
+### Step 7: Access the Application
+
+Once deployment is complete, Render provides a public URL similar to:
+
+```
+https://your-project-name.onrender.com
+```
+
+Open the URL in your browser to access the Flood Prediction System.
+
+### Updating the Deployment
+
+Whenever changes are pushed to the GitHub repository, Render automatically redeploys the latest version (if Auto Deploy is enabled).
+
+Alternatively:
+
+- Open the Render Dashboard
+- Select the deployed Web Service
+- Click **Manual Deploy**
+- Choose **Deploy Latest Commit**
+
+The application will rebuild and deploy the updated version.
+
+### Deployment Status
+
+✅ Successfully deployed on Render
+
+Live Application:
+
+```
+https://rising-water-mnkl.onrender.com/
+```
+
+---- 
+### Demo video
+
+https://drive.google.com/file/d/1gFYFPD8BuvL-2HOMcNg-wqlTQLVKUfqt/view?usp=sharing
+
+
