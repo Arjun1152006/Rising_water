@@ -116,7 +116,7 @@ Flood-Prediction/
 1. **Clone project repository**:
    ```bash
    git clone <repository-url>
-   cd AIML_PROJECT
+   cd Rising_water
    ```
 
 2. **Create and Activate Virtual Environment**:
