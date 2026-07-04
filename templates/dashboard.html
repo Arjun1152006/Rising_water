@@ -1,0 +1,273 @@
+{% extends "base.html" %}
+
+{% block title %}Rising Waters - Risk Analysis Dashboard{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        
+        <!-- Header -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-5 border-bottom pb-4" data-aos="fade-down">
+            <div>
+                <h2 class="font-heading fw-bold text-uppercase tracking-wider mb-1"><i class="bi bi-speedometer2 text-primary me-2"></i>Disaster Analytics Dashboard</h2>
+                <p class="text-muted mb-0">Operational dashboard showing environmental records, ML diagnostic metrics, and alerts summaries.</p>
+            </div>
+            <div class="mt-3 mt-md-0 d-flex gap-2">
+                <span class="badge bg-primary-light text-primary fs-6 p-2 px-3 font-heading border border-primary border-opacity-10 d-flex align-items-center">
+                    <span class="risk-dot low me-2"></span> Console Status: Active
+                </span>
+            </div>
+        </div>
+
+        <!-- 4 KPI Summary Cards -->
+        <div class="row g-4 mb-5" data-aos="fade-up">
+            <!-- Total Runs -->
+            <div class="col-6 col-md-3">
+                <div class="card custom-card stat-card h-100 border-bottom border-4 border-primary">
+                    <div class="card-body">
+                        <div class="stat-icon text-primary"><i class="bi bi-folder-check"></i></div>
+                        <div class="stat-number" id="counter-total">{{ db_stats.total_predictions }}</div>
+                        <div class="stat-label">Total Audits</div>
+                    </div>
+                </div>
+            </div>
+            <!-- Alert Warnings -->
+            <div class="col-6 col-md-3">
+                <div class="card custom-card stat-card h-100 border-bottom border-4 border-danger">
+                    <div class="card-body">
+                        <div class="stat-icon text-danger"><i class="bi bi-exclamation-triangle"></i></div>
+                        <div class="stat-number" id="counter-warnings">{{ db_stats.total_warnings }}</div>
+                        <div class="stat-label">Flood Alerts</div>
+                    </div>
+                </div>
+            </div>
+            <!-- Safe Scans -->
+            <div class="col-6 col-md-3">
+                <div class="card custom-card stat-card h-100 border-bottom border-4 border-success">
+                    <div class="card-body">
+                        <div class="stat-icon text-success"><i class="bi bi-check-circle"></i></div>
+                        <div class="stat-number" id="counter-safe">{{ db_stats.total_safe }}</div>
+                        <div class="stat-label">Safe Checks</div>
+                    </div>
+                </div>
+            </div>
+            <!-- Avg River Level -->
+            <div class="col-6 col-md-3">
+                <div class="card custom-card stat-card h-100 border-bottom border-4 border-info">
+                    <div class="card-body">
+                        <div class="stat-icon text-info"><i class="bi bi-water"></i></div>
+                        <div class="stat-number">{{ db_stats.avg_river_level }} m</div>
+                        <div class="stat-label">Avg River Level</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-5">
+            <!-- Left Panel: Meteorological Weather & System Widget -->
+            <div class="col-lg-5" data-aos="fade-right">
+                <div class="card custom-card p-4 h-100">
+                    <h5 class="font-heading fw-bold mb-3 border-bottom pb-2">
+                        <i class="bi bi-cloud-sun text-primary me-2"></i>Weather Telemetry Widget
+                    </h5>
+                    <!-- Current weather simulator widget -->
+                    <div class="p-3 bg-light rounded-16 border mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                <span class="d-block font-heading fw-bold fs-5"><i class="bi bi-geo-alt-fill text-danger me-1"></i>Station Grid Node 1</span>
+                                <small class="text-muted">Disaster Management Command</small>
+                            </div>
+                            <div class="text-end">
+                                <span class="fs-4 fw-extrabold text-primary">28.0°C</span>
+                                <small class="d-block text-muted">Overcast</small>
+                            </div>
+                        </div>
+                        <div class="row g-2 text-center text-xs border-top pt-2 mt-2">
+                            <div class="col-4 border-end">
+                                <small class="text-muted d-block">Barometric</small>
+                                <span class="fw-bold">1009 hPa</span>
+                            </div>
+                            <div class="col-4 border-end">
+                                <small class="text-muted d-block">Relative Hum</small>
+                                <span class="fw-bold">81.0%</span>
+                            </div>
+                            <div class="col-4">
+                                <small class="text-muted d-block">Wind Gusts</small>
+                                <span class="fw-bold">18.5 km/h</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Alert Status Panel -->
+                    <div class="alert alert-warning border-warning border-opacity-25 bg-warning-subtle text-dark p-3 rounded-12 mb-0">
+                        <div class="d-flex">
+                            <i class="bi bi-broadcast fs-3 me-3 text-warning"></i>
+                            <div>
+                                <h6 class="fw-bold mb-1">Grid Status: Active</h6>
+                                <p class="mb-0 small text-muted">Inference models running against continuous environmental logs. All pipeline APIs reporting healthy.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Recent 5 Predictions List -->
+            <div class="col-lg-7" data-aos="fade-left">
+                <div class="card custom-card p-4 h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+                        <h5 class="font-heading fw-bold mb-0">
+                            <i class="bi bi-clock-history text-primary me-2"></i>Recent Diagnoses
+                        </h5>
+                        <a href="{{ url_for('history') }}" class="btn btn-sm btn-outline-primary py-1">View Full Logs</a>
+                    </div>
+                    
+                    {% if not db_stats.recent_runs %}
+                        <div class="text-center my-4 py-4 text-muted">
+                            <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                            <span>No diagnostic runs performed yet.</span>
+                        </div>
+                    {% else %}
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped align-middle mb-0 small">
+                                <thead>
+                                    <tr>
+                                        <th>Timestamp</th>
+                                        <th>River Level</th>
+                                        <th>Risk Outcome</th>
+                                        <th>Certainty</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for run in db_stats.recent_runs %}
+                                    <tr>
+                                        <td>{{ run.timestamp }}</td>
+                                        <td>{{ run.river_level }} m</td>
+                                        <td>
+                                            {% if "No" in run.prediction_label %}
+                                                <span class="badge bg-success-subtle text-success">Safe</span>
+                                            {% else %}
+                                                <span class="badge bg-danger-subtle text-danger">Warning</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="fw-bold">{{ (run.probability * 100) | round(1) }}%</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Dynamic Chart.js and Evaluation Tabs -->
+        <ul class="nav nav-pills mb-4 border-bottom pb-2" id="dashboardTabs" role="tablist" data-aos="fade-up">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="live-tab" data-bs-toggle="pill" data-bs-target="#live-charts" type="button" role="tab" aria-controls="live-charts" aria-selected="true">
+                    <i class="bi bi-pie-chart me-2"></i>Database Analytics (Live)
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="ml-tab" data-bs-toggle="pill" data-bs-target="#ml-validation" type="button" role="tab" aria-controls="ml-validation" aria-selected="false">
+                    <i class="bi bi-cpu me-2"></i>Model Verification Plots
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab contents -->
+        <div class="tab-content" id="dashboardTabsContent" data-aos="fade-up">
+            
+            <!-- LIVE CHARTS TAB (CHART.JS) -->
+            <div class="tab-pane fade show active" id="live-charts" role="tabpanel" aria-labelledby="live-tab">
+                <div class="row g-4">
+                    <!-- Pie Chart: Risk Distribution -->
+                    <div class="col-lg-5">
+                        <div class="card custom-card p-4 h-100">
+                            <h5 class="font-heading fw-bold mb-3">Audits Outcome Distribution</h5>
+                            <div class="position-relative" style="height: 250px;">
+                                <canvas id="riskPieChart"></canvas>
+                            </div>
+                            <p class="text-muted small mt-3 mb-0">Percentage of runs classifying in safety (safe) zones vs. overflow hazard warnings.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Line Chart: River Level trend -->
+                    <div class="col-lg-7">
+                        <div class="card custom-card p-4 h-100">
+                            <h5 class="font-heading fw-bold mb-3">Precipitation vs River Level Audit Logs</h5>
+                            <div class="position-relative" style="height: 250px;">
+                                <canvas id="riverLineChart"></canvas>
+                            </div>
+                            <p class="text-muted small mt-3 mb-0">Auditing trends between input seasonal rain levels and waterway elevations logged over past prediction runs.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ML VALIDATION TAB (STATIC PLOTS) -->
+            <div class="tab-pane fade" id="ml-validation" role="tabpanel" aria-labelledby="ml-tab">
+                <!-- Accuracy Metrics Summary -->
+                {% if summary %}
+                <div class="row g-3 mb-4 text-center">
+                    <div class="col-6 col-sm-3">
+                        <div class="p-3 bg-light rounded-12 border">
+                            <small class="text-muted d-block small text-uppercase">Accuracy</small>
+                            <span class="fw-extrabold fs-4 text-primary">{{ (summary.metrics.accuracy * 100) | round(2) }}%</span>
+                        </div>
+                    </div>
+                    <div class="col-6 col-sm-3">
+                        <div class="p-3 bg-light rounded-12 border">
+                            <small class="text-muted d-block small text-uppercase">F1-Score</small>
+                            <span class="fw-extrabold fs-4 text-primary">{{ (summary.metrics.f1_score * 100) | round(2) }}%</span>
+                        </div>
+                    </div>
+                    <div class="col-6 col-sm-3">
+                        <div class="p-3 bg-light rounded-12 border">
+                            <small class="text-muted d-block small text-uppercase">Precision</small>
+                            <span class="fw-extrabold fs-4 text-primary">{{ (summary.metrics.precision * 100) | round(2) }}%</span>
+                        </div>
+                    </div>
+                    <div class="col-6 col-sm-3">
+                        <div class="p-3 bg-light rounded-12 border">
+                            <small class="text-muted d-block small text-uppercase">Recall (Sensitivity)</small>
+                            <span class="fw-extrabold fs-4 text-primary">{{ (summary.metrics.recall * 100) | round(2) }}%</span>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="row g-4">
+                    <!-- ROC Curve -->
+                    <div class="col-lg-6">
+                        <div class="card custom-card p-3 h-100">
+                            <h5 class="font-heading fw-bold mb-3 text-center">ROC Curves - Model Comparison</h5>
+                            <div class="dashboard-img-container">
+                                <img src="{{ url_for('static', filename='images/roc_curve_comparison.png') }}" alt="ROC Curve Comparison" class="img-fluid rounded-12 border" onerror="this.src='https://placehold.co/600x400?text=Run+Model+Training+to+Generate+Plot'">
+                            </div>
+                            <p class="text-muted small mt-2 mb-0">Performance evaluation highlighting True Positive vs False Positive rates for Decision Tree, Random Forest, KNN, and XGBoost.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Confusion Matrix -->
+                    <div class="col-lg-6">
+                        <div class="card custom-card p-3 h-100">
+                            <h5 class="font-heading fw-bold mb-3 text-center">Confusion Matrix - XGBoost (Best Model)</h5>
+                            <div class="dashboard-img-container">
+                                <img src="{{ url_for('static', filename='images/confusion_matrix_best.png') }}" alt="Confusion Matrix" class="img-fluid rounded-12 border" onerror="this.src='https://placehold.co/600x400?text=Run+Model+Training+to+Generate+Plot'">
+                            </div>
+                            <p class="text-muted small mt-2 mb-0">Audit grids demonstrating structural classification accuracy in false warning and missed flood metrics.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+    </div>
+</section>
+
+<!-- Pass dynamic SQLite stats to JS safely via JSON nodes -->
+<script id="db-warnings-count" type="application/json">{{ db_stats.total_warnings }}</script>
+<script id="db-safe-count" type="application/json">{{ db_stats.total_safe }}</script>
+<script id="db-chart-data" type="application/json">{{ db_stats.chart_data | tojson }}</script>
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}Rising Waters - Bulk Batch Processing{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        
+        <!-- Header -->
+        <div class="text-center mb-5" data-aos="fade-down">
+            <div class="d-inline-flex p-3 bg-primary-light text-primary rounded-circle mb-3 animate-float">
+                <i class="bi bi-file-earmark-spreadsheet fs-2"></i>
+            </div>
+            <h2 class="font-heading fw-bold text-uppercase tracking-wider">Bulk Diagnostics Console</h2>
+            <p class="text-muted col-lg-8 mx-auto">Upload environmental records saved in CSV formatting. The backend preprocessor handles missing cells, Caps outliers, scales features, and predicts risk levels for all lines.</p>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <!-- Guidelines Panel -->
+            <div class="col-lg-4" data-aos="fade-right">
+                <div class="card custom-card p-4 h-100 shadow-sm border-start border-4 border-primary">
+                    <h5 class="font-heading fw-bold mb-3 border-bottom pb-2">
+                        <i class="bi bi-info-circle text-primary me-2"></i>Required Headers
+                    </h5>
+                    <p class="text-muted small">Your uploaded file must contain the exact column headers below (spelling and casing must match):</p>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-sm table-borderless mb-3 small text-muted">
+                            <tbody>
+                                <tr><td><code class="text-primary font-heading fw-bold">Annual Rainfall</code></td><td>(mm)</td></tr>
+                                <tr><td><code class="text-primary font-heading fw-bold">Cloud Visibility</code></td><td>(%)</td></tr>
+                                <tr><td><code class="text-primary font-heading fw-bold">Seasonal Rainfall</code></td><td>(mm)</td></tr>
+                                <tr><td><code class="text-primary font-heading fw-bold">Temperature</code></td><td>(°C)</td></tr>
+                                <tr><td><code class="text-primary font-heading fw-bold">Humidity</code></td><td>(%)</td></tr>
+                                <tr><td><code class="text-primary font-heading fw-bold">Pressure</code></td><td>(hPa)</td></tr>
+                                <tr><td><code class="text-primary font-heading fw-bold">River Level</code></td><td>(m)</td></tr>
+                                <tr><td><code class="text-primary font-heading fw-bold">Wind Speed</code></td><td>(km/h)</td></tr>
+                                <tr><td><code class="text-primary font-heading fw-bold">Monsoon Intensity</code></td><td>(1-10)</td></tr>
+                                <tr><td><code class="text-primary font-heading fw-bold">Average Rainfall</code></td><td>(mm)</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="alert alert-info small py-2 rounded-10 border-0 mb-0">
+                        <i class="bi bi-info-circle-fill me-2"></i>Missing data values are automatically imputed using median rules.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upload panel -->
+            <div class="col-lg-8" data-aos="fade-left">
+                <div class="card custom-card p-4 h-100 shadow-sm">
+                    <h5 class="font-heading fw-bold mb-3 border-bottom pb-2">
+                        <i class="bi bi-cloud-upload text-primary me-2"></i>Upload File (.csv)
+                    </h5>
+                    
+                    <form id="batch-form" action="{{ url_for('batch_prediction') }}" method="POST" enctype="multipart/form-data">
+                        <div class="mb-4 p-4 border border-2 border-dashed rounded-16 bg-light bg-opacity-25 text-center">
+                            <i class="bi bi-filetype-csv text-muted" style="font-size: 3rem;"></i>
+                            <div class="mt-2">
+                                <label for="csv_file" class="form-label fw-bold d-block">Select CSV Document</label>
+                                <input class="form-control" type="file" id="csv_file" name="csv_file" accept=".csv" required style="max-width: 400px; margin: 0 auto;">
+                            </div>
+                        </div>
+                        
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-cpu me-2"></i>Run Batch Diagnostics
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Output results list -->
+        {% if records %}
+        <div class="card custom-card p-4" data-aos="fade-up">
+            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+                <h5 class="font-heading fw-bold text-success m-0"><i class="bi bi-check2-circle me-2"></i>Diagnostics Output ({{ records|length }} Lines)</h5>
+                <span class="badge bg-success-subtle text-success">Finished</span>
+            </div>
+            
+            <div class="table-responsive" style="max-height: 400px;">
+                <table class="table table-hover table-striped align-middle mb-0 small">
+                    <thead class="table-light sticky-top">
+                        <tr>
+                            <th>River Level</th>
+                            <th>Seasonal Rain</th>
+                            <th>Monsoon Intensity</th>
+                            <th>Computed Risk</th>
+                            <th>Probability</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in records %}
+                        <tr>
+                            <td>{{ row["River Level"] }} m</td>
+                            <td>{{ row["Seasonal Rainfall"] }} mm</td>
+                            <td>{{ row["Monsoon Intensity"] }}</td>
+                            <td>
+                                {% if "No" in row["Prediction"] %}
+                                    <span class="badge bg-success-subtle text-success px-2 py-1">Safe</span>
+                                {% else %}
+                                    <span class="badge bg-danger-subtle text-danger px-2 py-1 animate-pulse">Flood Risk</span>
+                                {% endif %}
+                            </td>
+                            <td class="fw-bold">{{ row["Flood Probability (%)"] }}%</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="text-muted small mt-3">
+                * All entries successfully saved to database logs. Open <a href="{{ url_for('history') }}" class="fw-bold text-primary">Audit Logs</a> to audit.
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+{% endblock %}

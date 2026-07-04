@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}Rising Waters - Risk Analysis Console{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-9">
+                <!-- Main Form Card -->
+                <div class="card custom-card p-4 p-md-5 animate__animated animate__fadeInUp">
+                    
+                    <!-- Form Header -->
+                    <div class="text-center mb-5">
+                        <div class="d-inline-flex p-3 bg-primary-light text-primary rounded-circle mb-3 animate-float">
+                            <i class="bi bi-shield-fill-exclamation fs-2"></i>
+                        </div>
+                        <h2 class="font-heading fw-bold text-uppercase tracking-wider">Flood Safety Diagnostics</h2>
+                        <p class="text-muted col-lg-8 mx-auto">Input meteorological data below. Our standard preprocessing and XGBoost prediction modules will scale and classify the risks.</p>
+                    </div>
+
+                    <!-- Predict Form -->
+                    <form id="predict-form" action="{{ url_for('predict') }}" method="POST">
+                        <div class="row g-4">
+                            
+                            <!-- Section 1: Rainfall & Hydrology -->
+                            <div class="col-md-6 border-end border-light border-opacity-10 pe-md-4">
+                                <h5 class="font-heading fw-bold mb-4 text-primary border-bottom pb-2">
+                                    <i class="bi bi-water me-2"></i>Hydrology & Rainfall
+                                </h5>
+                                
+                                <!-- River Level -->
+                                <div class="mb-3">
+                                    <label for="river_level" class="form-label">River Level (meters)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-water"></i></span>
+                                        <input type="number" step="0.01" class="form-control border-start-0" id="river_level" name="river_level" 
+                                               placeholder="e.g. 5.50" min="0" max="30" required 
+                                               value="{{ form.river_level if form else '' }}">
+                                    </div>
+                                    <small class="text-muted text-xs">Measured height of waterway beds (0 - 30m).</small>
+                                </div>
+                                
+                                <!-- Seasonal Rainfall -->
+                                <div class="mb-3">
+                                    <label for="seasonal_rainfall" class="form-label">Seasonal Rainfall (mm)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-cloud-rain-heavy"></i></span>
+                                        <input type="number" step="0.1" class="form-control border-start-0" id="seasonal_rainfall" name="seasonal_rainfall" 
+                                               placeholder="e.g. 1100.0" min="0" max="5000" required 
+                                               value="{{ form.seasonal_rainfall if form else '' }}">
+                                    </div>
+                                    <small class="text-muted text-xs">Monsoon precipitation cycle volume (0 - 5000mm).</small>
+                                </div>
+                                
+                                <!-- Annual Rainfall -->
+                                <div class="mb-3">
+                                    <label for="annual_rainfall" class="form-label">Annual Rainfall (mm)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-calendar-check"></i></span>
+                                        <input type="number" step="0.1" class="form-control border-start-0" id="annual_rainfall" name="annual_rainfall" 
+                                               placeholder="e.g. 2800.0" min="0" max="10000" required 
+                                               value="{{ form.annual_rainfall if form else '' }}">
+                                    </div>
+                                    <small class="text-muted text-xs">Yearly cumulative precipitation (0 - 10000mm).</small>
+                                </div>
+                                
+                                <!-- Average Rainfall -->
+                                <div class="mb-3">
+                                    <label for="average_rainfall" class="form-label">Average Rainfall (mm)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-graph-up"></i></span>
+                                        <input type="number" step="0.1" class="form-control border-start-0" id="average_rainfall" name="average_rainfall" 
+                                               placeholder="e.g. 450.0" min="0" max="3000" required 
+                                               value="{{ form.average_rainfall if form else '' }}">
+                                    </div>
+                                    <small class="text-muted text-xs">Baseline typical regional rain level (0 - 3000mm).</small>
+                                </div>
+                                
+                                <!-- Monsoon Intensity -->
+                                <div class="mb-3">
+                                    <label for="monsoon_intensity" class="form-label">Monsoon Intensity (Scale 1 - 10)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-wind"></i></span>
+                                        <input type="number" step="0.1" class="form-control border-start-0" id="monsoon_intensity" name="monsoon_intensity" 
+                                               placeholder="e.g. 7.5" min="1" max="10" required 
+                                               value="{{ form.monsoon_intensity if form else '' }}">
+                                    </div>
+                                    <small class="text-muted text-xs">Monsoon system strength index (1: Minimal, 10: Heavy).</small>
+                                </div>
+                            </div>
+                            
+                            <!-- Section 2: Atmosphere & Climate -->
+                            <div class="col-md-6 ps-md-4">
+                                <h5 class="font-heading fw-bold mb-4 text-primary border-bottom pb-2">
+                                    <i class="bi bi-cloud-sun me-2"></i>Atmosphere & Climate
+                                </h5>
+                                
+                                <!-- Temperature -->
+                                <div class="mb-3">
+                                    <label for="temperature" class="form-label">Temperature (°C)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-thermometer-half"></i></span>
+                                        <input type="number" step="0.1" class="form-control border-start-0" id="temperature" name="temperature" 
+                                               placeholder="e.g. 27.5" min="-10" max="60" required 
+                                               value="{{ form.temperature if form else '' }}">
+                                    </div>
+                                    <small class="text-muted text-xs">Ambient surface air temperature (-10°C to 60°C).</small>
+                                </div>
+                                
+                                <!-- Humidity -->
+                                <div class="mb-3">
+                                    <label for="humidity" class="form-label">Humidity (%)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-droplet-fill"></i></span>
+                                        <input type="number" step="0.1" class="form-control border-start-0" id="humidity" name="humidity" 
+                                               placeholder="e.g. 85.0" min="0" max="100" required 
+                                               value="{{ form.humidity if form else '' }}">
+                                    </div>
+                                    <small class="text-muted text-xs">Relative air moisture percentage (0 - 100%).</small>
+                                </div>
+                                
+                                <!-- Pressure -->
+                                <div class="mb-3">
+                                    <label for="pressure" class="form-label">Atmospheric Pressure (hPa)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-speedometer"></i></span>
+                                        <input type="number" step="0.1" class="form-control border-start-0" id="pressure" name="pressure" 
+                                               placeholder="e.g. 1005.0" min="900" max="1100" required 
+                                               value="{{ form.pressure if form else '' }}">
+                                    </div>
+                                    <small class="text-muted text-xs">Local sea-level air pressure (900 - 1100 hPa).</small>
+                                </div>
+                                
+                                <!-- Cloud Visibility -->
+                                <div class="mb-3">
+                                    <label for="cloud_visibility" class="form-label">Cloud Visibility (%)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-eye"></i></span>
+                                        <input type="number" step="0.1" class="form-control border-start-0" id="cloud_visibility" name="cloud_visibility" 
+                                               placeholder="e.g. 45.0" min="0" max="100" required 
+                                               value="{{ form.cloud_visibility if form else '' }}">
+                                    </div>
+                                    <small class="text-muted text-xs">Visual index based on cloud ceiling cover (0 - 100%).</small>
+                                </div>
+                                
+                                <!-- Wind Speed -->
+                                <div class="mb-3">
+                                    <label for="wind_speed" class="form-label">Wind Speed (km/h)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-wind"></i></span>
+                                        <input type="number" step="0.1" class="form-control border-start-0" id="wind_speed" name="wind_speed" 
+                                               placeholder="e.g. 25.0" min="0" max="150" required 
+                                               value="{{ form.wind_speed if form else '' }}">
+                                    </div>
+                                    <small class="text-muted text-xs">Standard horizontal wind velocity (0 - 150 km/h).</small>
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="text-center mt-5">
+                            <button type="submit" class="btn btn-primary btn-lg px-5 py-3 fs-5 font-heading shadow-hover transition-all">
+                                <i class="bi bi-cpu-fill me-2"></i>Compute Disaster Diagnosis
+                            </button>
+                        </div>
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

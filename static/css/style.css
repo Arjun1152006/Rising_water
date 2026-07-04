@@ -1,0 +1,898 @@
+/* Google Fonts - Outfit & Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+/* Color Variables and Theme System */
+:root {
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Inter', sans-serif;
+
+    /* Light Theme - Flood Prediction Theme (Water & Safety) */
+    --bg-app: #f0f6fa;
+    --bg-card: #ffffff;
+    --text-main: #1a2a3a;
+    --text-muted: #5a7a8a;
+    --primary: #0066b2;
+    /* Deep Water Blue */
+    --primary-light: #e3f0fa;
+    --primary-dark: #004d8a;
+    --accent: #e85d4a;
+    /* Flood Alert Red */
+    --accent-warning: #f4a261;
+    /* Warning Orange */
+    --accent-safe: #2ecc71;
+    /* Safe Green */
+    --accent-water: #3498db;
+    /* Water Blue */
+    --border: #d4e2ed;
+    --shadow: 0 10px 30px rgba(0, 102, 178, 0.08);
+    --shadow-hover: 0 15px 40px rgba(0, 102, 178, 0.15);
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.5);
+
+    /* Flood Risk Colors */
+    --risk-low: #2ecc71;
+    --risk-moderate: #f4a261;
+    --risk-high: #e67e22;
+    --risk-extreme: #e74c3c;
+}
+
+
+/* Base resets and defaults */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--bg-app);
+    color: var(--text-main);
+    transition: background-color 0.4s ease, color 0.4s ease;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.6;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+a {
+    text-decoration: none;
+    color: var(--primary);
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: var(--primary-dark);
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-app);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-dark);
+}
+
+/* Navigation Custom Styling */
+.navbar {
+    background: var(--bg-card);
+    border-bottom: 2px solid var(--border);
+    transition: all 0.4s ease;
+    padding: 0.8rem 1.5rem;
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-brand {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    color: var(--primary) !important;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 1.4rem;
+}
+
+.navbar-brand .brand-icon {
+    font-size: 1.8rem;
+}
+
+.nav-link {
+    color: var(--text-main) !important;
+    font-weight: 500;
+    padding: 0.6rem 1.2rem !important;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    background: var(--primary-light);
+    color: var(--primary) !important;
+}
+
+.nav-link .nav-badge {
+    background: var(--accent);
+    color: white;
+    font-size: 0.6rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 20px;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+}
+
+/* Theme Toggle Button */
+.theme-toggle-btn {
+    background: var(--bg-app);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-toggle-btn:hover {
+    background: var(--primary-light);
+    transform: rotate(30deg);
+    border-color: var(--primary);
+}
+
+/* Card Improvements */
+.custom-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    transition: all 0.4s ease;
+    overflow: hidden;
+}
+
+.custom-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--primary-light);
+}
+
+.custom-card .card-header {
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+}
+
+.custom-card .card-body {
+    padding: 1.5rem;
+}
+
+/* Hero Section - Flood Theme */
+.hero-section {
+    position: relative;
+    padding: 6rem 0;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--primary) 0%, #003a6b 50%, #001a33 100%);
+    color: #ffffff;
+    border-radius: 0 0 50px 50px;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+        radial-gradient(circle at 20% 30%, rgba(52, 152, 219, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(46, 204, 113, 0.08) 0%, transparent 40%);
+    pointer-events: none;
+}
+
+.hero-section .water-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.hero-title {
+    font-family: var(--font-heading);
+    font-size: 3.8rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, #ffffff 0%, #4a9eff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin-bottom: 2rem;
+}
+
+/* Risk Level Indicators */
+.risk-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.risk-low {
+    background: rgba(46, 204, 113, 0.15);
+    color: var(--risk-low);
+}
+
+.risk-moderate {
+    background: rgba(244, 162, 97, 0.15);
+    color: var(--risk-moderate);
+}
+
+.risk-high {
+    background: rgba(230, 126, 34, 0.15);
+    color: var(--risk-high);
+}
+
+.risk-extreme {
+    background: rgba(231, 76, 60, 0.15);
+    color: var(--risk-extreme);
+}
+
+.risk-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    animation: pulse-dot 1.5s ease-in-out infinite;
+}
+
+.risk-dot.low {
+    background: var(--risk-low);
+}
+
+.risk-dot.moderate {
+    background: var(--risk-moderate);
+}
+
+.risk-dot.high {
+    background: var(--risk-high);
+}
+
+.risk-dot.extreme {
+    background: var(--risk-extreme);
+}
+
+@keyframes pulse-dot {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.3);
+        opacity: 0.7;
+    }
+}
+
+/* Forms & Inputs */
+.form-label {
+    font-weight: 600;
+    color: var(--text-main);
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+}
+
+.form-control,
+.form-select {
+    background: var(--bg-app);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    color: var(--text-main) !important;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background: var(--bg-card);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(0, 102, 178, 0.12);
+    outline: none;
+}
+
+.form-control::placeholder {
+    color: var(--text-muted);
+}
+
+.form-control.is-invalid {
+    border-color: var(--accent);
+}
+
+.form-control.is-valid {
+    border-color: var(--accent-safe);
+}
+
+/* Buttons */
+.btn {
+    border-radius: 12px;
+    padding: 0.7rem 1.8rem;
+    font-weight: 600;
+    font-family: var(--font-heading);
+    transition: all 0.3s ease;
+    letter-spacing: 0.01em;
+}
+
+.btn-primary {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 102, 178, 0.3);
+}
+
+.btn-outline-primary {
+    border: 2px solid var(--primary);
+    color: var(--primary);
+}
+
+.btn-outline-primary:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #c0392b;
+    border-color: #c0392b;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(232, 93, 74, 0.3);
+}
+
+.btn-success {
+    background: var(--accent-safe);
+    border-color: var(--accent-safe);
+    color: white;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes wave {
+    0% {
+        transform: translateX(0) translateY(0);
+    }
+
+    50% {
+        transform: translateX(-20px) translateY(-5px);
+    }
+
+    100% {
+        transform: translateX(0) translateY(0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.animate-slide-left {
+    animation: slideInLeft 0.6s ease forwards;
+}
+
+.animate-slide-right {
+    animation: slideInRight 0.6s ease forwards;
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+.delay-1 {
+    animation-delay: 0.1s;
+}
+
+.delay-2 {
+    animation-delay: 0.2s;
+}
+
+.delay-3 {
+    animation-delay: 0.3s;
+}
+
+.delay-4 {
+    animation-delay: 0.4s;
+}
+
+/* Flood Gauge Visualization */
+.flood-gauge-container {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+.flood-gauge {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.gauge-meter {
+    width: 100%;
+    height: 20px;
+    background: var(--bg-app);
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    border: 2px solid var(--border);
+}
+
+.gauge-meter .gauge-fill {
+    height: 100%;
+    border-radius: 20px;
+    transition: width 1.5s cubic-bezier(0.1, 0.8, 0.25, 1);
+    position: relative;
+}
+
+.gauge-meter .gauge-fill.safe {
+    background: linear-gradient(90deg, #2ecc71, #27ae60);
+}
+
+.gauge-meter .gauge-fill.warning {
+    background: linear-gradient(90deg, #f4a261, #e67e22);
+}
+
+.gauge-meter .gauge-fill.danger {
+    background: linear-gradient(90deg, #e67e22, #e74c3c);
+}
+
+.gauge-meter .gauge-fill.extreme {
+    background: linear-gradient(90deg, #e74c3c, #c0392b);
+}
+
+.gauge-markers {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.gauge-label {
+    text-align: center;
+    margin-top: 1rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.gauge-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    font-family: var(--font-heading);
+    color: var(--primary);
+    text-align: center;
+}
+
+/* Dashboard Stats Cards */
+.stat-card {
+    text-align: center;
+    padding: 1.5rem;
+}
+
+.stat-card .stat-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-card .stat-number {
+    font-size: 2.2rem;
+    font-weight: 800;
+    font-family: var(--font-heading);
+    color: var(--primary);
+}
+
+.stat-card .stat-label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Weather/Flood Map Container */
+.map-container {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+}
+
+/* Alert Banner */
+.alert-banner {
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    border-left: 5px solid;
+    margin-bottom: 1.5rem;
+}
+
+.alert-banner.alert-danger {
+    background: rgba(232, 93, 74, 0.1);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.alert-banner.alert-warning {
+    background: rgba(244, 162, 97, 0.1);
+    border-color: var(--accent-warning);
+    color: var(--accent-warning);
+}
+
+.alert-banner.alert-success {
+    background: rgba(46, 204, 113, 0.1);
+    border-color: var(--accent-safe);
+    color: var(--accent-safe);
+}
+
+/* Flood Table */
+.flood-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+
+.flood-table th {
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid var(--border);
+}
+
+.flood-table td {
+    padding: 0.75rem 1rem;
+    background: var(--bg-app);
+    border-radius: 8px;
+}
+
+.flood-table tr:hover td {
+    background: var(--primary-light);
+}
+
+/* Timeline/History */
+.timeline-item {
+    padding: 1rem 0;
+    border-left: 3px solid var(--primary);
+    padding-left: 1.5rem;
+    margin-left: 1rem;
+    position: relative;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 0;
+    width: 13px;
+    height: 13px;
+    background: var(--primary);
+    border-radius: 50%;
+    border: 3px solid var(--bg-card);
+}
+
+.timeline-item .time {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.timeline-item .title {
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+/* Footer */
+footer {
+    background: var(--bg-card);
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 2.5rem 0;
+    margin-top: auto;
+    transition: all 0.4s ease;
+}
+
+footer a {
+    color: var(--text-muted);
+    transition: color 0.3s ease;
+}
+
+footer a:hover {
+    color: var(--primary);
+}
+
+/* Loading Overlay */
+#loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+#loading-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.spinner-box {
+    text-align: center;
+    color: white;
+}
+
+.custom-spinner {
+    width: 4rem;
+    height: 4rem;
+    border: 0.35rem solid rgba(255, 255, 255, 0.15);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spinner 0.8s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+.spinner-box .loading-text {
+    font-size: 1.1rem;
+    font-weight: 500;
+    opacity: 0.8;
+}
+
+@keyframes spinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .hero-title {
+        font-size: 2.8rem;
+    }
+
+    .hero-section {
+        padding: 4rem 0;
+        border-radius: 0 0 30px 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.2rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .navbar-brand {
+        font-size: 1.1rem;
+    }
+
+    .stat-card .stat-number {
+        font-size: 1.8rem;
+    }
+
+    .custom-card {
+        border-radius: 12px;
+    }
+
+    .gauge-value {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-title {
+        font-size: 1.8rem;
+    }
+
+    .hero-section {
+        padding: 3rem 0;
+        border-radius: 0 0 20px 20px;
+    }
+
+    .btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+
+    .stat-card {
+        padding: 1rem;
+    }
+}
+
+/* Utility Classes */
+.text-primary {
+    color: var(--primary);
+}
+
+.text-accent {
+    color: var(--accent);
+}
+
+.text-success {
+    color: var(--accent-safe);
+}
+
+.text-warning {
+    color: var(--accent-warning);
+}
+
+.text-muted {
+    color: var(--text-muted);
+}
+
+.bg-primary-light {
+    background: var(--primary-light);
+}
+
+.bg-card {
+    background: var(--bg-card);
+}
+
+.bg-app {
+    background: var(--bg-app);
+}
+
+.rounded-16 {
+    border-radius: 16px;
+}
+
+.gap-2 {
+    gap: 0.5rem;
+}
+
+.gap-3 {
+    gap: 1rem;
+}
+
+.shadow-hover:hover {
+    box-shadow: var(--shadow-hover);
+}
+
+.transition-all {
+    transition: all 0.3s ease;
+}
+
+/* Water Wave Background Effect */
+.water-wave {
+    position: relative;
+    overflow: hidden;
+}
+
+.water-wave::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    background: repeating-linear-gradient(90deg,
+            transparent,
+            transparent 50px,
+            rgba(52, 152, 219, 0.03) 50px,
+            rgba(52, 152, 219, 0.03) 100px);
+    animation: wave 4s linear infinite;
+}

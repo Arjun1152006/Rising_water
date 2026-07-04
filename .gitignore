@@ -1,0 +1,36 @@
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+*.so
+.Python
+
+# Flask Cache / Instance
+instance/
+.webassets-cache
+
+# DB & Model binaries
+predictions.db
+models/model.pkl
+models/scaler.pkl
+models/results_summary.pkl
+
+# Dynamic plots
+static/images/confusion_matrix_best.png
+static/images/roc_curve_comparison.png
+static/images/eda_correlation.png
+static/images/eda_target_dist.png
+static/images/eda_distributions.png
+static/images/eda_boxplots.png
+
+# IDEs & System files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

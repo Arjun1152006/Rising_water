@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}Rising Waters - Diagnostic Outcome{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-9">
+                <!-- Result Summary Card -->
+                <div class="card custom-card p-4 p-md-5 animate__animated animate__fadeInUp">
+                    
+                    {% set is_flood = "No" not in record.prediction_label %}
+                    {% set prob_percent = (record.probability * 100) | round(1) %}
+                    
+                    <div class="text-center mb-5">
+                        {% if is_flood %}
+                            <!-- Warning Banner Layout -->
+                            <div class="d-inline-flex p-4 bg-danger-subtle text-danger rounded-circle mb-3 animate__animated animate__heartBeat animate__infinite">
+                                <i class="bi bi-exclamation-triangle-fill" style="font-size: 3rem;"></i>
+                            </div>
+                            <h2 class="font-heading fw-bold text-danger text-uppercase">⚠ High Flood Risk Expected</h2>
+                            <p class="text-muted col-lg-8 mx-auto">WARNING: Current weather parameters and river levels cross safe margins. The machine learning pipeline classifies this state as a flood risk alert.</p>
+                        {% else %}
+                            <!-- Secure Safe Layout -->
+                            <div class="d-inline-flex p-4 bg-success-subtle text-success rounded-circle mb-3 animate-float">
+                                <i class="bi bi-shield-fill-check" style="font-size: 3rem;"></i>
+                            </div>
+                            <h2 class="font-heading fw-bold text-success text-uppercase">✅ Low Flood Risk Expected</h2>
+                            <p class="text-muted col-lg-8 mx-auto">Hydrology parameters, local river heights, and regional rainfall indexes are currently within standard safe limits.</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Risk Gauge Meter Visualization -->
+                    <div class="flood-gauge-container mb-5">
+                        <h5 class="font-heading fw-bold text-center mb-3">Model Prediction Certainty</h5>
+                        <div class="flood-gauge">
+                            <div class="gauge-value" id="gauge-value">{{ prob_percent }}%</div>
+                            <div class="gauge-meter">
+                                <div class="gauge-fill {% if record.probability < 0.35 %}safe{% elif record.probability < 0.65 %}warning{% elif record.probability < 0.85 %}danger{% else %}extreme{% endif %}" 
+                                     id="gauge-fill" style="width: 0%" data-width="{{ prob_percent }}"></div>
+                            </div>
+                            <div class="gauge-markers">
+                                <span>Safe (0%)</span>
+                                <span>Watch</span>
+                                <span>Warning</span>
+                                <span>Extreme (100%)</span>
+                            </div>
+                            <div class="gauge-label">
+                                {% if record.probability < 0.35 %}
+                                    <span class="badge bg-success text-white px-3 py-2">Low Risk Level</span>
+                                {% elif record.probability < 0.65 %}
+                                    <span class="badge bg-warning text-dark px-3 py-2">Moderate Risk Watch</span>
+                                {% elif record.probability < 0.85 %}
+                                    <span class="badge bg-danger text-white px-3 py-2">High Risk Warning</span>
+                                {% else %}
+                                    <span class="badge bg-danger text-white px-3 py-2 animate-pulse">Extreme Danger Alert</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-4 mb-4">
+                        <!-- Left Column: Guidelines / Tips -->
+                        <div class="col-md-7">
+                            {% if is_flood %}
+                                <div class="alert-banner alert-danger">
+                                    <h5 class="font-heading fw-bold"><i class="bi bi-shield-exclamation me-2"></i>Emergency Safety Directives</h5>
+                                    <ul class="mb-0 ps-3 small">
+                                        <li class="mb-1"><strong>Evacuation Preparedness</strong>: Pack valuable documents, emergency kits, and seek shelter at high-elevation designated safety areas.</li>
+                                        <li class="mb-1"><strong>Stay Informed</strong>: Monitor local emergency FM channels and weather channels. Do not cross flooded waterways.</li>
+                                        <li class="mb-1"><strong>Sandbagging barriers</strong>: Secure lower gateways and check sumps. Cut off main gas and electric connections.</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="card bg-light p-3 border-0">
+                                    <h6 class="font-heading fw-bold mb-2 text-danger"><i class="bi bi-telephone-fill me-2"></i>Disaster Helplines</h6>
+                                    <table class="table table-sm table-borderless mb-0 small">
+                                        <tr><td>Emergency Response Center</td><th class="text-end">108 / 112</th></tr>
+                                        <tr><td>Local Rescue Operations</td><th class="text-end">+91-555-0199</th></tr>
+                                        <tr><td>Flood Mitigation Helpdesk</td><th class="text-end">+91-555-0200</th></tr>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <div class="alert-banner alert-success">
+                                    <h5 class="font-heading fw-bold"><i class="bi bi-shield-check me-2"></i>Safety Preparedness Guidelines</h5>
+                                    <ul class="mb-0 ps-3 small">
+                                        <li class="mb-1"><strong>Routine Monitoring</strong>: Standard weather guidelines apply. Check river channel trends periodically.</li>
+                                        <li class="mb-1"><strong>Gutter Maintenance</strong>: Clear household gutters and local culverts of leaves or trash blockages.</li>
+                                        <li class="mb-1"><strong>Audit Emergency Packs</strong>: Verify battery units, clean drinking water, and dry rations are stocked.</li>
+                                    </ul>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Right Column: Parameters List -->
+                        <div class="col-md-5">
+                            <div class="card border border-light border-opacity-10 p-3 bg-light bg-opacity-25 h-100">
+                                <h6 class="font-heading fw-bold mb-3 border-bottom pb-2">
+                                    <i class="bi bi-list-check text-primary me-2"></i>Diagnostics Checklist
+                                </h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-borderless mb-0 small text-muted">
+                                        <tr><td>River Level:</td><td class="text-end text-dark fw-bold">{{ record.river_level }} m</td></tr>
+                                        <tr><td>Seasonal Rain:</td><td class="text-end text-dark fw-bold">{{ record.seasonal_rainfall }} mm</td></tr>
+                                        <tr><td>Monsoon Intensity:</td><td class="text-end text-dark fw-bold">{{ record.monsoon_intensity }}</td></tr>
+                                        <tr><td>Humidity:</td><td class="text-end text-dark fw-bold">{{ record.humidity }}%</td></tr>
+                                        <tr><td>Temperature:</td><td class="text-end text-dark fw-bold">{{ record.temperature }} °C</td></tr>
+                                        <tr><td>Atmospheric Press:</td><td class="text-end text-dark fw-bold">{{ record.pressure }} hPa</td></tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer Action Controls -->
+                    <div class="d-flex flex-column flex-sm-row justify-content-center gap-3 mt-4 pt-4 border-top">
+                        <a href="{{ url_for('download_pdf_report', record_id=record.id) }}" class="btn btn-primary btn-lg shadow-sm">
+                            <i class="bi bi-file-earmark-pdf me-2"></i>Download PDF Brief
+                        </a>
+                        <a href="{{ url_for('predict') }}" class="btn btn-outline-primary btn-lg">
+                            <i class="bi bi-arrow-repeat me-2"></i>New Diagnosis
+                        </a>
+                        <a href="{{ url_for('history') }}" class="btn btn-outline-secondary btn-lg">
+                            <i class="bi bi-clock-history me-2"></i>Audit Logs
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
